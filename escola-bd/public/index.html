@@ -1,0 +1,51 @@
+<!DOCTYPE html>  
+<html lang="pt-BR">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>Gerenciamento Escolar</title>  
+</head>  
+<body>  
+    <h1>Gerenciamento Escolar</h1>  
+    <div id="alunos"></div>  
+    <h2>Adicionar Aluno</h2>  
+    <input type="text" id="nome" placeholder="Nome">  
+    <input type="number" id="idade" placeholder="Idade">  
+    <input type="email" id="email" placeholder="Email">  
+    <button onclick="adicionarAluno()">Adicionar</button>  
+
+    <script>  
+        async function buscarAlunos() {  
+            const response = await fetch("/alunos");  
+            const data = await response.json();  
+            const divAlunos = document.getElementById("alunos");  
+            divAlunos.innerHTML = "";  
+            data.forEach(aluno => {  
+                divAlunos.innerHTML += `<p>${aluno.nome}, ${aluno.idade}, ${aluno.email}</p>`;  
+            });  
+        }  
+
+        async function adicionarAluno() {  
+            const nome = document.getElementById("nome").value;  
+            const idade = document.getElementById("idade").value;  
+            const email = document.getElementById("email").value;  
+
+            await fetch("/alunos", {  
+                method: "POST",  
+                headers: {  
+                    "Content-Type": "application/json"  
+                },  
+                body: JSON.stringify({ nome, idade, email })  
+            });  
+
+            document.getElementById("nome").value = "";  
+            document.getElementById("idade").value = "";  
+            document.getElementById("email").value = "";  
+            buscarAlunos();  
+        }  
+
+        // Carregar alunos ao carregar a página  
+        window.onload = buscarAlunos;  
+    </script>  
+</body>  
+</html>  
